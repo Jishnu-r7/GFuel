@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Dispenser</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            text-align: center;
+            width: 400px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 32px;
+            color: #333;
+        }
+
+        .display {
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            width: 300px;
+            margin: 0 auto;
+            background-color: #ddd;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+            width: 80px;
+            transition: background-color 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .btn-enter {
+            background-color: #4CAF50;
+        }
+
+        .btn-enter:hover {
+            background-color: #45a049;
+        }
+
+        .btn-enter:active {
+            background-color: #0D47A1;
+        }
+
+        .btn-cancel {
+            background-color: #E74C3C;
+        }
+
+        .btn-cancel:hover {
+            background-color: #C0392B;
+        }
+
+        .btn-cancel:active {
+            background-color: #922B21;
+        }
+
+        .fuel-injector {
+            background-color: #E74C3C;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin: 20px auto;
+            position: relative;
+            animation: fuelPump 2s infinite;
+        }
+
+        @keyframes fuelPump {
+            0% {
+                transform: translateY(-5px);
+            }
+            50% {
+                transform: translateY(5px);
+            }
+            100% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .keypad {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            justify-items: center;
+        }
+
+        .key {
+            background-color: #3498DB;
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px;
+            cursor: pointer;
+            border-radius: 8px;
+            width: 80px;
+            transition: background-color 0.3s;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .key:hover {
+            background-color: #2980B9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Fuel Dispenser</h1>
+    <div class="display" id="display">
+        <p id="pricePerLitre">Price per Litre: ₹80.00</p>
+        <p id="currentInputPrice">Current Input Price: ₹0.00</p>
+        <p id="totalFuel">Total Fuel: 0 Litres</p>
+    </div>
+    <div class="fuel-injector"></div>
+    <div class="keypad">
+        <!-- Buttons for input -->
+        <button class="key" onclick="updatePrice('1')">1</button>
+        <button class="key" onclick="updatePrice('2')">2</button>
+        <button class="key" onclick="updatePrice('3')">3</button>
+        <button class="key" onclick="updatePrice('4')">4</button>
+        <button class="key" onclick="updatePrice('5')">5</button>
+        <button class="key" onclick="updatePrice('6')">6</button>
+        <button class="key" onclick="updatePrice('7')">7</button>
+        <button class="key" onclick="updatePrice('8')">8</button>
+        <button class="key" onclick="updatePrice('9')">9</button>
+        <button class="key btn-enter" onclick="calculateTotal()">Enter</button>
+        <button class="key" onclick="updatePrice('0')">0</button>
+        <button class="key btn-cancel" onclick="cancelInput()">Cancel</button>
+    </div>
+</div>
+
+	<script>
+		// JavaScript functions for interaction
+
+		// Function to update the current input price
+		function updatePrice(digit) {
+			let currentPrice = document.getElementById("currentInputPrice");
+			let currentPriceValue = currentPrice.innerText.replace("₹", "");
+    
+			// Remove ".00" and convert to number to avoid floating point issues
+			currentPriceValue = parseFloat(currentPriceValue.replace(".00", ""));
+    
+			// If the current input price is not a number, set it to 0
+			if (isNaN(currentPriceValue)) {
+				currentPriceValue = 0;
+			}
+    
+			// Multiply current price by 10 and add the new digit
+			currentPriceValue = currentPriceValue * 10 + parseFloat(digit);
+    
+			// Update the display with the new price
+			currentPrice.innerText = "₹" + currentPriceValue.toFixed(2);
+		}
+
+		// Function to calculate the total fuel and update display
+		function calculateTotal() {
+        let currentPrice = document.getElementById("currentInputPrice");
+        let currentPriceValue = parseFloat(currentPrice.innerText.replace("₹", ""));
+
+        // If the current input price is not a number, set it to 0
+        if (isNaN(currentPriceValue)) {
+            currentPriceValue = 0;
+        }
+
+        let totalFuel = document.getElementById("totalFuel");
+        let totalFuelValue = parseFloat(totalFuel.innerText.replace("Total Fuel: ", "").replace(" Litres", ""));
+        let pricePerLitre = parseFloat(document.getElementById("pricePerLitre").innerText.replace("Price per Litre: ₹", ""));
+        let litresPurchased = currentPriceValue / pricePerLitre;
+
+        // If the calculation results in NaN, set total fuel to 0
+        if (isNaN(litresPurchased)) {
+            litresPurchased = 0;
+        }
+
+        totalFuel.innerText = "Total Fuel: " + (litresPurchased).toFixed(2) + " Litres";
+        currentPrice.innerText = "₹0.00";
+
+        // Send POST request with currentPriceValue
+        fetch('http://localhost:3001/updateCurrentPrice', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                currentPrice: parseInt(currentPriceValue) // Convert to integer
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('POST request successful');
+            } else {
+                console.error('Error:', response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+		// Function to cancel current input
+		function cancelInput() {
+			document.getElementById("currentInputPrice").innerText = "₹0.00";
+		}
+	</script>
+
+
+</body>
+</html>
